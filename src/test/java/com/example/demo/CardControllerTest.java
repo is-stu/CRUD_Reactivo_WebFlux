@@ -120,9 +120,8 @@ class CardControllerTest {
         verify(repository).findAll();
     }
 
-    @ParameterizedTest
-    @CsvSource({"Stewar Marin, 02/26, 4124213,VISA,06"})
-    void filterType(String title, String date, String number, String type, String code) {
+    @Test
+    void filterType() {
         var prueba = Flux.just(new Card("Stewar Marin", "02/26", "4124213", "VISA", "06"),
                 new Card("Raul Alzate", "01/29", "51234123", "PRIME", "12")
         );
