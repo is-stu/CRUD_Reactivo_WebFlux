@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -97,6 +98,26 @@ class CardControllerTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody().isEmpty();
+    }
+
+    @Test
+    void list() {
+        var list = Flux.just(
+                new Card("Stewar Marin", "02/26", "4124213","VISA","06"),
+                new Card("Raul Alzate", "01/29", "51234123","PRIME","12" )
+        );
+        when(repository.findAll()).thenReturn(list);
+
+        webTestClient.get()
+                .uri("/card")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$[0].title").isEqualTo("Stewar Marin")
+                .jsonPath("$[1].title").isEqualTo("Raul Alzate");
+
+        verify(cardService).listAll();
+        verify(repository).findAll();
     }
 
 }
