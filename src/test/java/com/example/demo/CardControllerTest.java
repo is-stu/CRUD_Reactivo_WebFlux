@@ -132,4 +132,19 @@ class CardControllerTest {
 
     }
 
+    @Test
+    void filterTypeController() {
+        var list = Flux.just(
+                new Card("alejo", "25/05/2021", "154641651", "VISA", "06"),
+                new Card("juan", "31/05/2021", "156513", "MASTERCARD", "03")
+        );
+        when(repository.findAll()).thenReturn(list);
+
+        webTestClient.get()
+                .uri("/card/type/VISA")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody();
+    }
+
 }

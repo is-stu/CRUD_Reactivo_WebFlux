@@ -37,4 +37,9 @@ public class CardController {
         return cardService.listAll();
     }
 
+    @GetMapping("/type/{type}")
+    public Flux<Card> listByFilter(@PathVariable("type") String type) {
+        return cardService.listAll().filter(el -> el.getType().equals(type));
+    }
+
 }
