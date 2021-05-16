@@ -90,4 +90,13 @@ class CardControllerTest {
                 .expectBody().isEmpty();
     }
 
+    @Test
+    void delete() {
+        webTestClient.delete()
+                .uri("/card/1")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody().isEmpty();
+    }
+
 }
