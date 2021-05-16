@@ -36,14 +36,14 @@ class CardControllerTest {
     private CardRepository repository;
 
     @ParameterizedTest
-    @CsvSource({"Stewar Marin, 02/26, 4124213,VISA,06,0","Stewar Marin, 02/26, 4124213,VISA,06,1"})
-    void post(String title,String date, String number, String type, String code, Integer times) {
+    @CsvSource({"Stewar Marin, 02/26, 4124213,VISA,06,0", "Stewar Marin, 02/26, 4124213,VISA,06,1"})
+    void post(String title, String date, String number, String type, String code, Integer times) {
 
-        if(times == 0) {
+        if (times == 0) {
             when(repository.findByName(number)).thenReturn(Mono.just(new Card()));
         }
 
-        if(times == 1) {
+        if (times == 1) {
             when(repository.findByName(number)).thenReturn(Mono.empty());
         }
 
@@ -103,8 +103,8 @@ class CardControllerTest {
     @Test
     void list() {
         var list = Flux.just(
-                new Card("Stewar Marin", "02/26", "4124213","VISA","06"),
-                new Card("Raul Alzate", "01/29", "51234123","PRIME","12" )
+                new Card("Stewar Marin", "02/26", "4124213", "VISA", "06"),
+                new Card("Raul Alzate", "01/29", "51234123", "PRIME", "12")
         );
         when(repository.findAll()).thenReturn(list);
 
@@ -118,6 +118,19 @@ class CardControllerTest {
 
         verify(cardService).listAll();
         verify(repository).findAll();
+    }
+
+    @ParameterizedTest
+    @CsvSource({"Stewar Marin, 02/26, 4124213,VISA,06"})
+    void filterType(String title, String date, String number, String type, String code) {
+        var prueba = Flux.just(new Card("Stewar Marin", "02/26", "4124213", "VISA", "06"),
+                new Card("Raul Alzate", "01/29", "51234123", "PRIME", "12")
+        );
+
+        prueba = prueba.filter(el -> el.getType().equals("VISA"));
+
+        Assertions.assertEquals(1L,prueba.count().block());
+
     }
 
 }
